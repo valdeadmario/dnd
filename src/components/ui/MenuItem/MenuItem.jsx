@@ -26,16 +26,16 @@ export const MenuItem = ({
     over && title === over.id && active?.data.current?.type !== "tab";
 
   return (
-    <li
-      key={index}
-      className={classNames(styles.tab, {
-        [styles.selected]: index === activeTab,
-        [styles.hover]: isOverTab,
-      })}
-      onClick={() => handleTabChange(index)}
-      ref={disabled ? undefined : setNodeRef}
-    >
-      <span> {title}</span>
-    </li>
+      <li
+        key={index}
+        className={classNames(styles.tab, {
+          [styles.selected]: index === activeTab,
+          [styles.hover]: isOverTab,
+        })}
+        onClick={() => handleTabChange(index)}
+        ref={disabled ? undefined : setNodeRef}
+      >
+        <span> {title}</span>
+      </li>
   );
 };

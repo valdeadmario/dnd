@@ -5,9 +5,7 @@ const Wrapper = ({ children }) => (
   <div
     style={{
       maxWidth: 600,
-      padding: 10,
       margin: "0 auto",
-      marginTop: "10%",
     }}
   >
     {children}

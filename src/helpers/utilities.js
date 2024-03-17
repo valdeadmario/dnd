@@ -23,10 +23,10 @@ export function getProjection(
   const dragDepth = getDragDepth(dragOffset, indentationWidth);
   const projectedDepth = activeItem.depth + dragDepth;
 
-  const isOverGroup = overItem?.isGroup || !!overItem?.depth;
+  const isOverGroup = overItem?.isGroup || !!overItem?.depth || previousItem?.isGroup || previousItem?.depth;
 
   const maxDepth =
-    activeItem.isGroup || !isOverGroup
+    activeItem.isGroup || !isOverGroup || (nextItem?.isGroup && !previousItem?.isGroup && !previousItem?.depth)
       ? 0
       : getMaxDepth({
           previousItem,

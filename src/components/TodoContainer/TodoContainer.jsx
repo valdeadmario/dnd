@@ -1,7 +1,6 @@
 import React, { useState, useRef, useMemo, useEffect } from "react";
 import {
   DndContext,
-  closestCenter,
   PointerSensor,
   useSensor,
   useSensors,
@@ -57,7 +56,7 @@ export const TodoContainer = () => {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        delay: 120,
+        delay: 180,
         tolerance: 5,
       },
     })
@@ -175,7 +174,6 @@ export const TodoContainer = () => {
   return (
     <DndContext
       sensors={sensors}
-      collisionDetection={closestCenter}
       measuring={measuring}
       onDragStart={handleDragStart}
       onDragMove={handleDragMove}

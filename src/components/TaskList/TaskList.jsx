@@ -1,6 +1,7 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { DragOverlay, defaultDropAnimation } from "@dnd-kit/core";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { CSS } from "@dnd-kit/utilities";
 import {
   SortableContext,
@@ -40,6 +41,7 @@ export const TaskList = ({
   flattenedItems,
   projected,
 }) => {
+  const [selectedTask, setSelectedTask] = useState(null);
   const sortedIds = useMemo(
     () => flattenedItems.map(({ id }) => id),
     [flattenedItems]
@@ -53,36 +55,40 @@ export const TaskList = ({
       items={sortedIds}
       strategy={verticalListSortingStrategy}
     >
-      {flattenedItems.map(
-        ({
-          id,
-          children,
-          collapsed,
-          depth,
-          isGroup,
-          name,
-          color,
-          parentId,
-        }) => (
-          <SortableTask
-            key={id}
-            id={id}
-            value={id}
-            name={name}
-            color={
-              color ||
-              (parentId &&
-                flattenedItems.find(({ id }) => id === parentId)?.color)
-            }
-            childCount={getChildCount(items, activeId) + 1}
-            depth={id === activeId && projected ? projected.depth : depth}
-            isGroup={isGroup}
-            indentationWidth={indentationWidth}
-            collapsed={collapsed && isGroup}
-            onCollapse={() => handleCollapse(id)}
-          />
-        )
-      )}
+      <TransitionGroup>
+        {flattenedItems.map(
+          ({
+            id,
+            collapsed,
+            depth,
+            isGroup,
+            name,
+            color,
+            parentId,
+          }) => (
+            <CSSTransition key={id} timeout={150} classNames="task-fade">
+              <SortableTask
+                id={id}
+                value={id}
+                name={name}
+                color={
+                  color ||
+                  (parentId &&
+                    flattenedItems.find(({ id }) => id === parentId)?.color)
+                }
+                childCount={getChildCount(items, activeId) + 1}
+                depth={id === activeId && projected ? projected.depth : depth}
+                isGroup={isGroup}
+                indentationWidth={indentationWidth}
+                isSelected={selectedTask === id}
+                onSelect={() => setSelectedTask(id)}
+                collapsed={collapsed && isGroup}
+                onCollapse={() => handleCollapse(id)}
+              />
+            </CSSTransition>
+          )
+        )}
+      </TransitionGroup>
       {createPortal(
         <DragOverlay dropAnimation={dropAnimationConfig}>
           {activeId && activeItem ? (
@@ -96,6 +102,7 @@ export const TaskList = ({
               childCount={getChildCount(items, activeId) + 1}
               value={activeId.toString()}
               indentationWidth={indentationWidth}
+              cloneDepth={projected.depth}
             />
           ) : null}
         </DragOverlay>,

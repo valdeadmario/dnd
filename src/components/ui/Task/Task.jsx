@@ -23,11 +23,13 @@ export const Task = forwardRef(
       isGroup,
       color,
       name,
+      isSelected,
+      onSelect,
+      cloneDepth,
       ...props
     },
     ref
   ) => {
-    const withGroupPlaceholder = isGroup && !collapsed && ghost;
 
     return (
       <>
@@ -47,16 +49,17 @@ export const Task = forwardRef(
           {...props}
         >
           <div
+            onClick={ !isGroup ? onSelect : undefined }
             onDoubleClick={isGroup ? onCollapse : undefined}
             className={classNames(styles.taskItem, {
-              [styles.isGhostGroup]: withGroupPlaceholder,
               [styles.group]: isGroup,
               [styles.child]: !!depth,
+              [styles.selected]: isSelected,
             })}
             ref={ref}
             style={{
               ...style,
-              "--height": `${Number(withGroupPlaceholder) * childCount * 35}px`,
+              "--cloneDepth": `${indentationWidth * cloneDepth}px`,
             }}
             {...handleProps}
           >
@@ -65,7 +68,7 @@ export const Task = forwardRef(
                 onClick={onCollapse}
                 className={classNames(
                   styles.collapse,
-                  collapsed && styles.collapsed
+                  (collapsed || (clone && isGroup)) && styles.collapsed
                 )}
               >
                 {collapseIcon}
@@ -79,18 +82,6 @@ export const Task = forwardRef(
               />
             )}
             <span className={styles.text}>{name}</span>
-            {withGroupPlaceholder &&
-              Array(childCount)
-                .fill("")
-                .map((_, idx) => (
-                  <div
-                    key={idx}
-                    className={styles.groupPlaceholder}
-                    style={{
-                      "--bottomSpace": `${idx * 35}px`,
-                    }}
-                  />
-                ))}
           </div>
         </li>
       </>
