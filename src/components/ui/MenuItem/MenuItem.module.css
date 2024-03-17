@@ -1,0 +1,38 @@
+.tab {
+    font-size: 14px;
+    flex-basis: 13%;
+    margin: 0px 0.1em;
+    padding: 5px 10px;
+    cursor: pointer;
+    transform: translateY(1px);
+    border-radius: 5px 5px 0px 0px;
+    transition: background-color 0.2s ease-in-out;
+    border: 1px solid transparent;
+    text-align: center;
+    font-family: Roboto;
+  
+    line-height: 16px;
+    letter-spacing: 0em;
+  
+  
+    &.hover {
+      background-color: #ececec;
+    }
+  
+    &:hover {
+      background-color: #ececec;
+    }
+  
+    &.selected {
+      border-radius: 5px 5px 0px 0px;
+      border-width: 1px;
+      border-color: #ccc #ccc #fff #ccc;
+      border-style: solid;
+      font-weight: bold;
+  
+      &:hover {
+        background: none;
+      }
+    }
+  }
+  

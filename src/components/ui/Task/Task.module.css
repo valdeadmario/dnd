@@ -1,0 +1,144 @@
+.wrapper {
+    list-style: none;
+    box-sizing: border-box;
+    padding-left: var(--spacing);
+  
+    &.clone {
+      transform: rotate(2deg);
+      pointer-events: none;
+      padding: 0;
+      padding-left: 10px;
+      padding-top: 5px;
+  
+      .taskItem {
+        --vertical-padding: 5px;
+  
+        padding-right: 24px;
+        border-radius: 4px;
+  
+        background-color: rgba(25, 118, 210, 0.3);
+  
+        &.group {
+          background-color: rgba(var(--groupColor), 0.3);
+        }
+      }
+    }
+  
+    &.ghost {
+      .taskItem {
+        background: transparent;
+        border: 1px dashed rgba(0, 0, 0, 0.38);
+  
+        .text,
+        .collapse,
+        .checkbox {
+          opacity: 0;
+        }
+  
+        &.isGhostGroup {
+          height: var(--height);
+          border: none;
+        }
+      }
+  
+      .taskItem > * {
+        box-shadow: none;
+        background-color: transparent;
+      }
+    }
+  }
+  
+  .taskItem {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 10px 8px;
+    background-color: rgba(0, 0, 0, 0.03);
+    color: #222;
+    box-sizing: border-box;
+    margin-bottom: 3px;
+    height: 32px;
+    border: none;
+    border-radius: 4px;
+    cursor: grab;
+  
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 16px;
+    letter-spacing: 0em;
+    text-align: left;
+    font-family: Roboto;
+  
+    svg path {
+      fill: rgb(var(--groupColor));
+    }
+  
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.06);
+    }
+  
+    &.child {
+      border-left: 2px solid rgb(var(--groupColor));
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  
+    &.group {
+      background-color: rgba(var(--groupColor), 0.12);
+  
+      .text {
+        color: rgb(var(--groupColor));
+      }
+    }
+  }
+  
+  .text {
+    flex-grow: 1;
+    padding-left: 0.5rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  
+  .disableInteraction {
+    pointer-events: none;
+  }
+  
+  .disableSelection,
+  .clone {
+    .text,
+    .Count {
+      user-select: none;
+      -webkit-user-select: none;
+    }
+  }
+  
+  .collapse {
+    svg {
+      transition: transform 250ms ease;
+    }
+  
+    &.collapsed svg {
+      transform: rotate(-90deg);
+    }
+  }
+  
+  .groupPlaceholder {
+    width: calc(100% - 20px);
+    height: 30px;
+    border: 1px dashed rgba(0, 0, 0, 0.38);
+    position: absolute;
+    top: var(--bottomSpace);
+    left: 20px;
+    border-radius: 4px;
+  
+    &:first-of-type {
+      width: 100%;
+      left: 0;
+    }
+  }
+  
+  .checkbox {
+    margin: 0;
+  }
+  
