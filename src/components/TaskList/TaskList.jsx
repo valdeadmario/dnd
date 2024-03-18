@@ -9,6 +9,7 @@ import {
 } from "@dnd-kit/sortable";
 import { getChildCount } from "../../helpers/utilities";
 import { SortableTask } from "../SortableTask";
+import "./TaskList.css";
 
 const dropAnimationConfig = {
   keyframes({ transform }) {
@@ -57,34 +58,32 @@ export const TaskList = ({
     >
       <TransitionGroup>
         {flattenedItems.map(
-          ({
-            id,
-            collapsed,
-            depth,
-            isGroup,
-            name,
-            color,
-            parentId,
-          }) => (
-            <CSSTransition key={id} timeout={150} classNames="task-fade">
-              <SortableTask
-                id={id}
-                value={id}
-                name={name}
-                color={
-                  color ||
-                  (parentId &&
-                    flattenedItems.find(({ id }) => id === parentId)?.color)
-                }
-                childCount={getChildCount(items, activeId) + 1}
-                depth={id === activeId && projected ? projected.depth : depth}
-                isGroup={isGroup}
-                indentationWidth={indentationWidth}
-                isSelected={selectedTask === id}
-                onSelect={() => setSelectedTask(id)}
-                collapsed={collapsed && isGroup}
-                onCollapse={() => handleCollapse(id)}
-              />
+          ({ id, collapsed, depth, isGroup, name, color, parentId }) => (
+            <CSSTransition
+              key={id}
+              timeout={200}
+              classNames="task"
+            >
+              <div>
+                <SortableTask
+                  id={id}
+                  value={id}
+                  name={name}
+                  color={
+                    color ||
+                    (parentId &&
+                      flattenedItems.find(({ id }) => id === parentId)?.color)
+                  }
+                  childCount={getChildCount(items, activeId) + 1}
+                  depth={id === activeId && projected ? projected.depth : depth}
+                  isGroup={isGroup}
+                  indentationWidth={indentationWidth}
+                  isSelected={selectedTask === id}
+                  onSelect={() => setSelectedTask(id)}
+                  collapsed={collapsed && isGroup}
+                  onCollapse={() => handleCollapse(id)}
+                />
+              </div>
             </CSSTransition>
           )
         )}
