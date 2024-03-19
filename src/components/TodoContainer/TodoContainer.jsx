@@ -4,6 +4,8 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  closestCorners,
+  rectIntersection,
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import { TabsPanel, Tab } from "../ui";
@@ -24,6 +26,22 @@ const measuring = {
     strategy: 0,
   },
 };
+
+function customCollisionDetectionAlgorithm({ droppableContainers, ...args }) {
+  const rectIntersectionCollisions = rectIntersection({
+    ...args,
+    droppableContainers: droppableContainers.filter(({ id }) => id === "tab"),
+  });
+
+  if (rectIntersectionCollisions.length > 0) {
+    return rectIntersectionCollisions;
+  }
+
+  return closestCorners({
+    ...args,
+    droppableContainers: droppableContainers.filter(({ id }) => id !== "tab"),
+  });
+}
 
 export const TodoContainer = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -56,7 +74,7 @@ export const TodoContainer = () => {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        delay: 180,
+        delay: 120,
         tolerance: 5,
       },
     })
@@ -151,7 +169,7 @@ export const TodoContainer = () => {
         const updatedTaskLists = lists
           .map((tab, idx) =>
             idx === taskListIndex
-              ? { ...tab, taskList: [...tab.taskList, activeTreeItem] }
+              ? { ...tab, taskList: [activeTreeItem, ...tab.taskList] }
               : tab
           )
           .map((tab, idx) =>
@@ -174,6 +192,7 @@ export const TodoContainer = () => {
   return (
     <DndContext
       sensors={sensors}
+      // collisionDetection={closestCorners}
       measuring={measuring}
       onDragStart={handleDragStart}
       onDragMove={handleDragMove}

@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import classNames from "classnames";
 import { defaultAnimateLayoutChanges, useSortable } from "@dnd-kit/sortable";
 import styles from "./MenuItem.module.css";
 
-const animateLayoutChanges = (args) =>
-  defaultAnimateLayoutChanges({ ...args, wasDragging: true });
+const animateLayoutChanges = (args) => false;
 
 export const MenuItem = ({
   activeTab,
@@ -22,6 +21,10 @@ export const MenuItem = ({
     animateLayoutChanges,
   });
 
+  useEffect(() => {
+
+  }, [])
+
   const isOverTab =
     over && title === over.id && active?.data.current?.type !== "tab";
 
@@ -33,9 +36,9 @@ export const MenuItem = ({
           [styles.hover]: isOverTab,
         })}
         onClick={() => handleTabChange(index)}
-        ref={disabled ? undefined : setNodeRef}
       >
         <span> {title}</span>
+        <div className={styles.container} ref={disabled ? undefined : setNodeRef} />
       </li>
   );
 };

@@ -3,6 +3,15 @@ import classNames from "classnames";
 import { ActionButton } from "../ActionButton";
 import styles from "./Task.module.css";
 
+function clearSelection() {
+  if (document.selection && document.selection.empty) {
+    document.selection.empty();
+  } else if (window.getSelection) {
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+  }
+}
+
 export const Task = forwardRef(
   (
     {
@@ -26,20 +35,21 @@ export const Task = forwardRef(
       isSelected,
       onSelect,
       cloneDepth,
+      overTaskList,
       ...props
     },
     ref
   ) => {
-
     return (
       <>
-        <li
+        <div
           className={classNames(
             styles.wrapper,
             clone && styles.clone,
             ghost && styles.ghost,
             disableSelection && styles.disableSelection,
-            disableInteraction && styles.disableInteraction
+            disableInteraction && styles.disableInteraction,
+            overTaskList && styles.overTaskList
           )}
           ref={wrapperRef}
           style={{
@@ -49,7 +59,7 @@ export const Task = forwardRef(
           {...props}
         >
           <div
-            onClick={ !isGroup ? onSelect : undefined }
+            onClick={!isGroup ? onSelect : undefined}
             onDoubleClick={isGroup ? onCollapse : undefined}
             className={classNames(styles.taskItem, {
               [styles.group]: isGroup,
@@ -59,7 +69,10 @@ export const Task = forwardRef(
             ref={ref}
             style={{
               ...style,
-              "--cloneDepth": `${indentationWidth * cloneDepth}px`,
+              "--cloneDepth": `${
+                indentationWidth * Number(depth ? !cloneDepth : -cloneDepth)
+              }px`,
+              "--cloneMargin": `-${indentationWidth * depth * 1.5}px`,
             }}
             {...handleProps}
           >
@@ -83,7 +96,7 @@ export const Task = forwardRef(
             )}
             <span className={styles.text}>{name}</span>
           </div>
-        </li>
+        </div>
       </>
     );
   }

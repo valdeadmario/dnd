@@ -6,6 +6,7 @@ import { CSS } from "@dnd-kit/utilities";
 import {
   SortableContext,
   verticalListSortingStrategy,
+  useSortable,
 } from "@dnd-kit/sortable";
 import { getChildCount } from "../../helpers/utilities";
 import { SortableTask } from "../SortableTask";
@@ -13,17 +14,7 @@ import "./TaskList.css";
 
 const dropAnimationConfig = {
   keyframes({ transform }) {
-    return [
-      { opacity: 1, transform: CSS.Transform.toString(transform.initial) },
-      {
-        opacity: 0,
-        transform: CSS.Transform.toString({
-          ...transform.final,
-          x: transform.final.x + 5,
-          y: transform.final.y + 5,
-        }),
-      },
-    ];
+    return [];
   },
   easing: "ease-out",
   sideEffects({ active }) {
@@ -42,14 +33,19 @@ export const TaskList = ({
   flattenedItems,
   projected,
 }) => {
+  const { over } = useSortable({});
+  const overTaskList = over?.data.current?.type === "tab";
+
   const [selectedTask, setSelectedTask] = useState(null);
   const sortedIds = useMemo(
     () => flattenedItems.map(({ id }) => id),
     [flattenedItems]
   );
-  const activeItem = activeId
-    ? flattenedItems.find(({ id }) => id === activeId)
-    : null;
+  const activeItemIndex = activeId
+    ? flattenedItems.findIndex(({ id }) => id === activeId)
+    : -1;
+
+  const activeItem = activeId ? flattenedItems[activeItemIndex] : null;
 
   return (
     <SortableContext
@@ -58,7 +54,19 @@ export const TaskList = ({
     >
       <TransitionGroup>
         {flattenedItems.map(
-          ({ id, collapsed, depth, isGroup, name, color, parentId }) => (
+          (
+            {
+              id,
+              collapsed,
+              depth,
+              isGroup,
+              name,
+              color,
+              parentId,
+              isLastChild,
+            },
+            idx
+          ) => (
             <CSSTransition
               key={id}
               timeout={200}
@@ -74,6 +82,7 @@ export const TaskList = ({
                     (parentId &&
                       flattenedItems.find(({ id }) => id === parentId)?.color)
                   }
+                  draggableIsGroup={activeItem?.isGroup}
                   childCount={getChildCount(items, activeId) + 1}
                   depth={id === activeId && projected ? projected.depth : depth}
                   isGroup={isGroup}
@@ -82,6 +91,9 @@ export const TaskList = ({
                   onSelect={() => setSelectedTask(id)}
                   collapsed={collapsed && isGroup}
                   onCollapse={() => handleCollapse(id)}
+                  isBelowDraggable={activeId && idx > activeItemIndex}
+                  isUpperDraggable={activeId && idx < activeItemIndex}
+                  isLastChild={isLastChild}
                 />
               </div>
             </CSSTransition>
@@ -101,7 +113,7 @@ export const TaskList = ({
               childCount={getChildCount(items, activeId) + 1}
               value={activeId.toString()}
               indentationWidth={indentationWidth}
-              cloneDepth={projected.depth}
+              cloneDepth={projected?.depth}
             />
           ) : null}
         </DragOverlay>,

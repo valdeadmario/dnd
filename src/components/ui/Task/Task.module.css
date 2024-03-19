@@ -18,7 +18,8 @@
 
       background-color: rgba(25, 118, 210, 0.3);
 
-      width: calc(100% - var(--cloneDepth));
+      width: calc(100% + var(--cloneDepth));
+      margin-left: var(--cloneMargin);
 
       &.group {
         background-color: rgba(var(--groupColor), 0.3);
@@ -45,6 +46,12 @@
     .taskItem > * {
       box-shadow: none;
       background-color: transparent;
+    }
+  }
+
+  &.overTaskList {
+    .taskItem {
+      display: none;
     }
   }
 }

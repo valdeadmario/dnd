@@ -22,11 +22,15 @@ export function getProjection(
   const nextItem = newItems[overItemIndex + 1];
   const dragDepth = getDragDepth(dragOffset, indentationWidth);
   const projectedDepth = activeItem.depth + dragDepth;
-
-  const isOverGroup = overItem?.isGroup || !!overItem?.depth || previousItem?.isGroup || previousItem?.depth;
-
+  const isOverGroup =
+    overItem?.isGroup ||
+    !!overItem?.depth ||
+    previousItem?.isGroup ||
+    previousItem?.depth;
   const maxDepth =
-    activeItem.isGroup || !isOverGroup || (nextItem?.isGroup && !previousItem?.isGroup && !previousItem?.depth)
+    activeItem.isGroup ||
+    !isOverGroup ||
+    (nextItem?.isGroup && !previousItem?.isGroup && !previousItem?.depth)
       ? 0
       : getMaxDepth({
           previousItem,
@@ -79,11 +83,15 @@ function getMinDepth({ nextItem }) {
 
 function flatten(items = [], parentId = null, depth = 0) {
   return items.reduce((acc, item, index) => {
-    return [
-      ...acc,
-      { ...item, parentId, depth, index },
-      ...flatten(item.children, item.id, depth + 1),
-    ];
+    const children = flatten(item.children, item.id, depth + 1);
+
+    const formattedChildren = children.length
+      ? children.map((item, idx) =>
+          idx === children.length - 1 ? { ...item, isLastChild: true } : item
+        )
+      : children;
+
+    return [...acc, { ...item, parentId, depth, index }, ...formattedChildren];
   }, []);
 }
 

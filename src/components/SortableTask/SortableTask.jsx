@@ -8,7 +8,15 @@ import { iOS } from "../../helpers/utilities";
 const animateLayoutChanges = ({ isSorting, wasDragging }) =>
   isSorting || wasDragging ? false : true;
 
-export const SortableTask = ({ id, depth, ...props }) => {
+export const SortableTask = ({
+  id,
+  depth,
+  draggableIsGroup,
+  isUpperDraggable,
+  isBelowDraggable,
+  isLastChild,
+  ...props
+}) => {
   const {
     attributes,
     isDragging,
@@ -18,6 +26,7 @@ export const SortableTask = ({ id, depth, ...props }) => {
     setDroppableNodeRef,
     transform,
     transition,
+    over,
   } = useSortable({
     id,
     animateLayoutChanges,
@@ -28,13 +37,22 @@ export const SortableTask = ({ id, depth, ...props }) => {
     transition,
   };
 
+  const overTaskList = over?.data.current?.type === "tab";
+
   return (
     <Task
       ref={setDraggableNodeRef}
-      wrapperRef={setDroppableNodeRef}
+      wrapperRef={
+        draggableIsGroup &&
+        ((!!depth && (!isLastChild || isUpperDraggable)) ||
+          (isBelowDraggable && props.isGroup))
+          ? null
+          : setDroppableNodeRef
+      }
       style={style}
       depth={depth}
       ghost={isDragging}
+      overTaskList={isDragging && overTaskList}
       disableSelection={iOS}
       disableInteraction={isSorting}
       handleProps={{
