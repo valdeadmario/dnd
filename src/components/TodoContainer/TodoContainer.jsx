@@ -8,9 +8,14 @@ import {
   rectIntersection,
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
+import {
+  restrictToVerticalAxis,
+  restrictToWindowEdges,
+} from '@dnd-kit/modifiers';
 import { TabsPanel, Tab } from "../ui";
 import { TaskList } from "../TaskList";
 import { defaultLists } from "../../helpers/testData";
+
 import {
   buildTree,
   flattenTree,
@@ -26,22 +31,6 @@ const measuring = {
     strategy: 0,
   },
 };
-
-function customCollisionDetectionAlgorithm({ droppableContainers, ...args }) {
-  const rectIntersectionCollisions = rectIntersection({
-    ...args,
-    droppableContainers: droppableContainers.filter(({ id }) => id === "tab"),
-  });
-
-  if (rectIntersectionCollisions.length > 0) {
-    return rectIntersectionCollisions;
-  }
-
-  return closestCorners({
-    ...args,
-    droppableContainers: droppableContainers.filter(({ id }) => id !== "tab"),
-  });
-}
 
 export const TodoContainer = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -199,6 +188,7 @@ export const TodoContainer = () => {
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
+      modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
     >
       <TabsPanel
         activeTab={activeTab}

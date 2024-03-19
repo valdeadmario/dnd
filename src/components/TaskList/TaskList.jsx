@@ -2,11 +2,9 @@ import React, { useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { DragOverlay, defaultDropAnimation } from "@dnd-kit/core";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import { CSS } from "@dnd-kit/utilities";
 import {
   SortableContext,
   verticalListSortingStrategy,
-  useSortable,
 } from "@dnd-kit/sortable";
 import { getChildCount } from "../../helpers/utilities";
 import { SortableTask } from "../SortableTask";
@@ -33,9 +31,6 @@ export const TaskList = ({
   flattenedItems,
   projected,
 }) => {
-  const { over } = useSortable({});
-  const overTaskList = over?.data.current?.type === "tab";
-
   const [selectedTask, setSelectedTask] = useState(null);
   const sortedIds = useMemo(
     () => flattenedItems.map(({ id }) => id),
@@ -52,7 +47,7 @@ export const TaskList = ({
       items={sortedIds}
       strategy={verticalListSortingStrategy}
     >
-      <TransitionGroup>
+      <TransitionGroup exit={!activeItem}>
         {flattenedItems.map(
           (
             {
