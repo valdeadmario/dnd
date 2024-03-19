@@ -40,6 +40,19 @@ export const Task = forwardRef(
     },
     ref
   ) => {
+    clone && console.log('clone', indentationWidth * Number(depth ? !cloneDepth : -cloneDepth))
+
+
+    const getMargin = (depth, cloneDepth) => {
+      switch (true) {
+        case (!!depth && !cloneDepth):
+          return '-20px';
+        case (!depth && !!cloneDepth):
+          return '20px'
+        default:
+          return '0px'
+      }
+    }
     return (
       <>
         <div
@@ -72,7 +85,7 @@ export const Task = forwardRef(
               "--cloneDepth": `${
                 indentationWidth * Number(depth ? !cloneDepth : -cloneDepth)
               }px`,
-              "--cloneMargin": `-${indentationWidth * depth * 1.5}px`,
+              "--cloneMargin": getMargin(depth, cloneDepth),
             }}
             {...handleProps}
           >

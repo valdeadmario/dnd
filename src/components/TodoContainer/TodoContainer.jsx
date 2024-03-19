@@ -188,7 +188,7 @@ export const TodoContainer = () => {
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
-      modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
+      // modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
     >
       <TabsPanel
         activeTab={activeTab}
